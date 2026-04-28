@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FITHOME | Startup Mode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+body{background:#0c0c1f;color:white;font-family:Inter}
+.fade{opacity:0;transform:translateY(40px)}
+.fade.show{opacity:1;transform:translateY(0);transition:all .8s ease}
+.card{transition:.4s}
+.card:hover{transform:translateY(-10px) scale(1.03)}
+.progress{transition:width .4s}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="h-screen flex flex-col justify-center items-center text-center">
+<h1 class="text-7xl font-bold text-cyan-400">FITHOME</h1>
+<p class="mt-4 text-gray-400">Entrená como un atleta desde tu casa</p>
+<a href="#rutina" class="mt-6 px-8 py-4 bg-cyan-400 text-black rounded-xl hover:scale-110 transition">EMPEZAR</a>
+</header>
+
+<!-- RUTINA COMPLETA -->
+<section id="rutina" class="p-10">
+<h2 class="text-4xl mb-8 fade">Rutina Completa</h2>
+<div class="grid md:grid-cols-3 gap-6">
+
+<div class="card fade bg-gray-800 p-6 rounded-xl"><h3>Flexiones</h3><p>4x fallo</p><input type="checkbox"></div>
+<div class="card fade bg-gray-800 p-6 rounded-xl"><h3>Sentadillas</h3><p>4x15</p><input type="checkbox"></div>
+<div class="card fade bg-gray-800 p-6 rounded-xl"><h3>Plancha</h3><p>60s</p><input type="checkbox"></div>
+<div class="card fade bg-gray-800 p-6 rounded-xl"><h3>Zancadas</h3><p>3x12</p><input type="checkbox"></div>
+<div class="card fade bg-gray-800 p-6 rounded-xl"><h3>Fondos</h3><p>3x10</p><input type="checkbox"></div>
+<div class="card fade bg-gray-800 p-6 rounded-xl"><h3>Abdominales</h3><p>3x20</p><input type="checkbox"></div>
+
+</div>
+</section>
+
+<!-- PROGRESO -->
+<section class="text-center p-10 fade">
+<h2 class="text-3xl">Progreso</h2>
+<div class="w-full bg-gray-700 h-4 mt-4 rounded">
+<div id="bar" class="bg-cyan-400 h-4 rounded progress" style="width:0%"></div>
+</div>
+</section>
+
+<!-- TIMER -->
+<section class="text-center p-10 fade">
+<h2 class="text-3xl mb-4">Timer</h2>
+<div id="time" class="text-6xl">45:00</div>
+<div class="mt-4 flex justify-center gap-4">
+<button id="start" class="bg-green-500 px-4 py-2 rounded">Start</button>
+<button id="pause" class="bg-red-500 px-4 py-2 rounded">Pause</button>
+<button id="reset" class="bg-gray-500 px-4 py-2 rounded">Reset</button>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="text-center py-6 text-gray-500">FITHOME Startup 2026</footer>
+
+<script>
+// ANIMACIONES CON DELAY
+const elements=document.querySelectorAll('.fade');
+const obs=new IntersectionObserver(entries=>{
+entries.forEach((e,i)=>{
+if(e.isIntersecting){
+setTimeout(()=>{e.target.classList.add('show')},i*150);
+}
+});
+});
+elements.forEach(el=>obs.observe(el));
+
+// PROGRESO
+const checks=document.querySelectorAll('input');
+const bar=document.getElementById('bar');
+checks.forEach(c=>c.addEventListener('change',()=>{
+let done=[...checks].filter(x=>x.checked).length;
+bar.style.width=(done/checks.length)*100+'%';
+}));
+
+// TIMER
+let t=2700, int=null;
+const display=document.getElementById('time');
+function upd(){let m=Math.floor(t/60),s=t%60;display.textContent=`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`}
+document.getElementById('start').onclick=()=>{if(int)return;int=setInterval(()=>{if(t>0){t--;upd()}},1000)}
+document.getElementById('pause').onclick=()=>{clearInterval(int);int=null}
+document.getElementById('reset').onclick=()=>{clearInterval(int);int=null;t=2700;upd()}
+upd();
+</script>
+
+</body>
+</html>
